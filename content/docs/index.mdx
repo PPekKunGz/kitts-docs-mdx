@@ -1,202 +1,144 @@
 ---
-title: 🚀 Quick Start - Next.js 15
-description: สอนติดตั้งและเริ่มต้นใช้งาน Next.js 15 แบบเข้าใจง่าย
+title: "Welcome to Kitt's Docs"
+description: "Overview, introduction, and project references by PPekKunGzDev."
 ---
+import { Home, Github, Youtube, Package, Globe, Hammer, Wrench } from "lucide-react";
 
-## Introduction
+# 👋 Welcome to **Kitt's Docs**
 
-Next.js 15 คือเฟรมเวิร์ก React ระดับเรือธงที่ช่วยให้คุณสร้างเว็บได้เร็ว ลื่น และมีโครงสร้างที่จัดการง่ายกว่าเดิม  
-ด้านล่างนี้คือคู่มือเริ่มต้นใช้งานแบบกระชับ พร้อมโครงสร้างที่ครบชุด
+ยินดีต้อนรับสู่ Documentation Center สำหรับทุกผลงานของผม **Kitt (PPekKunGzDev)**  
+ที่นี่จะรวบรวมข้อมูลตั้งแต่ Web Development, Backend Services, จนถึง Minecraft Modding และ Roleplay Systems  
+ทั้งหมดถูกจัดทำขึ้นเพื่อให้เพื่อนร่วมงาน, ผู้ใช้งาน, ลูกค้า และ Community ใช้อ้างอิงได้อย่างสะดวกและเป็นมาตรฐานเดียวกัน
 
-<Callout title="ข้อดีของ Next.js 15">
-  เวอร์ชันใหม่นี้มาพร้อมประสิทธิภาพดีขึ้น, รองรับ Server Actions เสถียรมากขึ้น, และระบบ routing แบบ App Router ที่เป็นมาตรฐานใหม่
+<Callout type="info">
+นี่เป็นเพียง **ภาพรวม** ของโปรไฟล์และโปรเจกต์ทั้งหมด  
+Full Portfolio อยู่ที่: https://ppekkungz.in.th
 </Callout>
 
 ---
 
-## 🧱 What You'll Need
+# 🧑‍💻 About Me
+
+ผมคือ **Kitt (PPekKunGzDev)** — Frontend Developer, Freelance Developer และ Minecraft Mod Developer  
+ทำงานทั้งสาย Web Dev และระบบ Minecraft แบบ Custom สำหรับ Community ไทย
+
+### Roles & Skills
+
+- **Frontend Developer**  
+  Next.js 15, TypeScript, TailwindCSS, Shadcn/UI, Framer Motion  
+- **Minecraft Developer**  
+  Fabric/Forge client mods, custom gameplay systems, server tooling  
+- **Community Builder**  
+  ทำโปรเจกต์ร่วมกับ YouTubers, Minecraft creators และทีม roleplay หลายแห่ง
+
+---
+
+# 🎭 Minecraft Roleplay Development
+
+หนึ่งในงานที่ผมทำบ่อยที่สุดคือ **Minecraft Roleplay Development**  
+ออกแบบระบบเฉพาะทางตั้งแต่ Mod → Server System → Deployment ให้ใช้งานได้จริง  
+รองรับทั้ง Java Edition และ Bedrock Edition
+> รวมทำงานกับทีม Dimension Studio และทีม Revolution
 
 <Cards>
-  <Card title="Node.js 18.18+ / 20+">
-    จำเป็นต้องใช้ Node เวอร์ชันใหม่เพื่อรองรับฟีเจอร์ล่าสุดของ Next.js
+  <Card 
+    title="Custom Roleplay Mods"
+    icon={<Hammer />}
+  >
+    พัฒนา Mod เฉพาะระบบ เช่น Custom UI, Roleplay Tools, Effect System  
+    พร้อมประสบการณ์ฝั่ง Java มากกว่า **7 ปี**
   </Card>
 
-  <Card title="Package Manager">
-    เช่น npm, pnpm, yarn หรือ bun ก็ได้
+  <Card 
+    title="Server Setup & Deployment"
+    icon={<Wrench />}
+  >
+    ตั้งค่าเซิร์ฟเวอร์ Roleplay พร้อมใช้งานจริง  
+    รองรับ Java & Bedrock รวมถึง Performance Tuning และระบบหลังบ้านครบชุด
+  </Card>
+</Cards>
+
+<Callout type="success">
+ผมเคยร่วมงานกับหลายทีม Roleplay ไทย, โปรเจกต์ Creator รายใหญ่ และ Community ระดับหลายร้อยผู้เล่น  
+หากต้องการระบบเฉพาะทาง สามารถออกแบบและพัฒนาให้ตรง Concept ได้ทั้งหมด
+</Callout>
+
+---
+
+# 🌐 My Profiles
+
+<Cards>
+  <Card 
+    title="GitHub"
+    href="https://github.com/PPekKunGz"
+    icon={<Github />}
+  >
+    โค้ดทั้งหมด, Open-source projects และ Web experiments
+  </Card>
+
+  <Card 
+    title="YouTube"
+    href="https://youtube.com/@ppekkungzchannel"
+    icon={<Youtube />}
+  >
+    Dev Diary, Mod Showcase และคอนเทนต์เกี่ยวกับ Minecraft
+  </Card>
+
+  <Card 
+    title="Modrinth"
+    href="https://modrinth.com/user/PPekKunGz"
+    icon={<Package />}
+  >
+    Minecraft Mods เช่น Loy Krathong, Carry-On Throwing, Figura Lite และอื่น ๆ
+  </Card>
+
+  <Card 
+    title="Portfolio"
+    href="https://ppekkungz.in.th"
+    icon={<Globe />}
+  >
+    รวมผลงานทั้งหมด พร้อมรายละเอียดด้านเทคนิค
   </Card>
 </Cards>
 
 ---
 
-## 🔧 Check Node Version
+# 🛒 Pre-Order Shop — Built Solo
 
-```bash
-node -v
-```
+**shop.ppekkungz.in.th** คือโปรเจกต์ Full-Stack ที่พัฒนาคนเดียวทั้งระบบ  
+สร้างขึ้นเพื่อรองรับการขายสินค้า Pre-Order ของช่อง YouTube แบบจริงจัง  
+โดยที่ตอนนั้น “ไม่มีประสบการณ์ Backend มาก่อน” แต่ต้องออกแบบทั้งระบบภายใน 1 โปรเจกต์
 
----
+### ⚙️ Tech Stack
+- **Frontend:** Next.js 15 + TypeScript + TailwindCSS + Shadcn/UI  
+- **Animation:** Framer Motion  
+- **Backend:** NestJS (REST API)  
+- **Database:** Supabase (PostgreSQL)  
+- **Auth:** Supabase Auth  
+- **Storage:** PostgREST  
 
-## 🚀 Create New Next.js 15 Project
-
-```bash tab="npm"
-npm create-next-app@latest
-```
-
-```bash tab="pnpm"
-pnpm create next-app
-```
-
-```bash tab="yarn"
-yarn create next-app
-```
-
-```bash tab="bun"
-bun create next-app
-```
-
-ระบบจะถามตัวเลือก เช่น:
-
-- ใช้ TypeScript ไหม  
-- เปิด App Router (แนะนำให้เปิด)  
-- ใช้ Tailwind CSS หรือไม่  
-- ใช้ Turbopack หรือไม่  
-
----
-
-## 📁 เข้าไปในโปรเจกต์
-
-```bash
-cd ชื่อโปรเจกต์ของคุณ
-```
-
----
-
-## ▶️ Start Development Server
-
-```bash tab="npm"
-npm run dev
-```
-```bash tab="pnpm"
-pnpm run dev
-```
-```bash tab="yarn"
-yarn run dev
-```
-```bash tab="bun"
-bun run dev
-```
-
-เปิดเบราว์เซอร์ที่  
-http://localhost:3000
-
----
-
-## 📂 Project Structure (Next.js 15)
-
-<Files>
-  <Folder name="src" defaultOpen>
-    <Folder name="app" defaultOpen>
-      <File name="layout.tsx" />
-      <File name="page.tsx" />
-      <File name="globals.css" />
-    </Folder>
-  </Folder>
-
-  <Folder name="public" defaultOpen>
-    <File name="logo.png" />
-    <File name="assets/test.png" />
-  </Folder>
-
-  <File name="next.config.js" />
-  <File name="package.json" />
-</Files>
-
----
-
-## ✏️ สร้างหน้าแรก
-
-แก้ไขไฟล์ `src/app/page.tsx`
-
-```tsx
-export default function Home() {
-  return <h1>Hello Next.js 15</h1>;
-}
-```
-
----
-
-## ➕ เพิ่มหน้าใหม่
-
-สร้างไฟล์:
-
-`app/about/page.tsx`
-
-```tsx
-export default function About() {
-  return <h1>About us</h1>;
-}
-```
-
-ตอนนี้เปิดได้แล้วที่:  
-http://localhost:3000/about
-
----
-
-## ⚗️ เปิดฟีเจอร์ทดลอง (Optional)
-
-แก้ `next.config.js`:
-
-```js
-const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
-};
-
-export default nextConfig;
-```
-
----
-
-## 🏗️ Build Production
-
-```bash
-npm run build
-npm start
-```
-
----
-
-## 🌍 Deploy
-
-<Callout title="แนะนำ: Vercel">
-  Next.js ถูกสร้างโดยทีม Vercel  
-  ซึ่งแปลว่า Deploy ง่ายที่สุดบน Vercel และทำงานเข้ากันดีมาก
+<Callout type="info">
+ระบบนี้จะถูกเปิด Open Source ในอนาคตเพื่อช่วยสอนผู้ที่สนใจ Full-Stack แบบ Production Ready
 </Callout>
 
-ขั้นตอน:
+---
 
-1. Push โปรเจกต์ขึ้น GitHub  
-2. เชื่อม GitHub → Vercel  
-3. กด Deploy ได้ทันที
+# 📚 What's Inside This Documentation?
+
+- การใช้งานและเอกสาร Minecraft mods  
+- Server systems & internal tools สำหรับ Roleplay  
+- Web Development / API references  
+- โครงสร้างโปรเจกต์, design notes  
+- Docs สำหรับงานปัจจุบันและระบบที่กำลังพัฒนา  
+- เอกสารเบื้องหลังที่ใช้สำหรับ Community & Creator Projects  
 
 ---
 
-## 🤔 FAQ
+# 🚀 Start Exploring
 
-<Accordions>
-  <Accordion id="err-node" title="ติดปัญหา Node เวอร์ชันไม่รองรับ?">
-    ให้ใช้ Node.js 18.18+ หรือ 20+ เพื่อให้รองรับ Next.js 15
-  </Accordion>
+เลือกจาก Sidebar เพื่อเริ่มต้นใช้งานเอกสารของแต่ละโปรเจกต์  
 
-  <Accordion id="dynamic-route" title="Route แบบ Dynamic จะช้าไหม?">
-    Next.js 15 ทำ Static Optimization ให้อัตโนมัติเมื่อมี generateStaticParams  
-    ความเร็วเทียบเท่าหน้า static
-  </Accordion>
-
-  <Accordion id="deploy" title="Deploy ที่ไหนดี?">
-    แนะนำ Vercel เพราะรองรับฟีเจอร์ Next.js ครบถ้วนที่สุด
-  </Accordion>
-</Accordions>
-
----
+<Callout type="info">
+ถ้าพบปัญหา, ต้องการให้เพิ่มเนื้อหา หรืออยากขอคำปรึกษาเรื่องระบบ  
+สามารถติดต่อได้ผ่าน GitHub หรือ YouTube ของผม
+</Callout>
