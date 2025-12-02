@@ -1,7 +1,8 @@
 {
     "title": "📃 Minecraft",
     "pages": [
-        "index"
+        "index",
+        "mods"
     ],
     "defaultOpen": false
 }

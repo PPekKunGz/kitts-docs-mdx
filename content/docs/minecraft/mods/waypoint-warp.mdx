@@ -1,0 +1,169 @@
+---
+title: ⚡ Waypoint Warp
+description: ระบบเทเลพอร์ตประสิทธิภาพสูงสำหรับ Fabric 1.20.1
+---
+
+# Waypoint Warp  
+**ระบบเทเลพอร์ตความเร็วสูงสำหรับเซิร์ฟเวอร์ (Fabric 1.20.1)**
+
+- [Modrinth](https://modrinth.com/mod/waypoint-warp)
+- [Source Code](https://github.com/CrafOps/WaypointWarp)
+
+Waypoint Warp คือเอนจินเทเลพอร์ตฝั่งเซิร์ฟเวอร์รุ่นใหม่ที่ออกแบบมาเพื่อแทนที่ระบบ command block จำนวนมากของวานิลลา ด้วยตัวจัดการ waypoint แบบรวมศูนย์ที่ทำงานรวดเร็วและกิน MSPT ต่ำมาก
+
+ไม่ต้องติดตั้ง client mod — เหมาะสำหรับเซิร์ฟเวอร์ RPG, Adventure, Dungeon, Hub และ Minigame
+
+<Callout title="ทำไมต้องใช้ Waypoint Warp?">
+  ระบบ command block ของวานิลลาทำงานทุก tick x ทุกผู้เล่น x ทุก waypoint - ทำให้ MSPT สูงแบบไม่จำเป็น - Waypoint Warp แทนทุกอย่างด้วยเอนจินเดียวที่ประหยัดกว่าเยอะ
+</Callout>
+
+---
+
+## 🚀 คุณสมบัติเด่น
+
+<Cards>
+  <Card title="Global Waypoint Storage">
+    เก็บใน PersistentState ทั้งโลก ไม่มี tile entity และไม่ต้องใช้ block
+  </Card>
+
+  <Card title="Zero Command Blocks">
+    ไม่ต้องใช้ command block, ไม่มีการ spam คำสั่ง
+  </Card>
+
+  <Card title="Trigger Radius Optimization">
+    เช็กเฉพาะตอนผู้เล่นเข้าใกล้ waypoint เท่านั้น
+  </Card>
+
+  <Card title="Particles & Summon">
+    รองรับ particle และ summon entity เมื่อไปถึงปลายทาง
+  </Card>
+
+  <Card title="Cooldown System">
+    ป้องกันการเทเลพอร์ตซ้ำเร็วเกินไป
+  </Card>
+
+  <Card title="Pure Server-Side">
+    ผู้เล่นไม่ต้องติดตั้ง mod ใด ๆ
+  </Card>
+</Cards>
+
+---
+
+## 📉 ประสิทธิภาพ (MSPT)
+
+<Callout>
+  Command block ของวานิลลามักขึ้นไปถึง **3-6ms/tick** - Waypoint Warp คงที่ที่เพียง **0.01-0.03ms/tick** แม้มี 50+ waypoints
+</Callout>
+<img src="https://cdn.modrinth.com/data/cT9DC23o/images/36ba6485ceef97776cc053664c5837f21b527cc1.png" alt="Waypoint Warp MSPT" draggable="false" />
+> Image is not real 100%, generate by AI. on server schedule tick 0.0012 > 0.0016
+---
+
+## 🧭 โครงสร้าง Waypoint
+
+<Cards>
+  <Card title="พื้นที่ต้นทาง (From Zone)">
+    ตำแหน่งที่ผู้เล่นเดินเข้าเพื่อเริ่มเทเลพอร์ต
+  </Card>
+
+  <Card title="จุดหมายปลายทาง (To Position)">
+    พิกัดปลายทางที่ผู้เล่นถูกส่งไป
+  </Card>
+
+  <Card title="ตัวเลือกเสริม">
+    particle, summon entity, cooldown, radius
+  </Card>
+</Cards>
+
+---
+
+## 🔧 คำสั่งทั้งหมด
+
+### สร้าง Waypoint
+
+```
+waypoint set <name> <from_pos> <to_pos>
+waypoint set <name> <from_pos> <to_pos> summon <entity> <dy>
+waypoint set <name> <from_pos> <to_pos> particle <id>
+```
+
+### แก้ไข Waypoint
+```
+waypoint edit <name> from <pos>
+waypoint edit <name> to <pos>
+waypoint edit <name> radius <value>
+waypoint edit <name> particle <id>
+waypoint edit <name> summon <entity> <dy>
+```
+
+### คำสั่งทั่วไป
+```
+waypoint distance <name> <radius>
+waypoint list
+waypoint remove <name>
+```
+
+### Debug
+```
+waypoint debug mspt
+waypoint debug active
+```
+
+---
+
+## 🧪 ตัวอย่างการใช้งานอย่างง่าย
+
+<Steps>
+  <Step title="ยืนที่ตำแหน่งต้นทาง">
+    เปิด F3 เพื่อดูพิกัดของคุณ
+  </Step>
+
+  <Step title="สร้าง waypoint">
+    <CodeBlock lang="text">
+    <div className="pl-3">
+waypoint set spawn_tp 100 64 100 200 80 200
+    </div>
+    </CodeBlock>
+  </Step>
+
+  <Step title="เดินเข้าสู่พื้นที่ trigger">
+    ระบบจะทำการเทเลพอร์ตทันที
+  </Step>
+</Steps>
+
+---
+
+## 📂 ไฟล์ที่เกี่ยวข้อง
+
+<Files>
+  <Folder name="world" defaultOpen>
+    <Folder name="data" defaultOpen>
+      <File name="waypoints.dat" />
+    </Folder>
+  </Folder>
+
+  {/* <Folder name="config" defaultOpen>
+    <File name="waypoint-warp.json" />
+  </Folder> */}
+</Files>
+
+---
+
+## 🧩 ใช้ทำอะไรได้บ้าง
+
+<Cards>
+  <Card title="Adventure Map" />
+  <Card title="RPG Server" />
+  <Card title="Dungeon System" />
+  <Card title="Hub Teleporter" />
+  <Card title="Cutscene Trigger" />
+  <Card title="Minigame Logic" />
+</Cards>
+
+---
+
+## 🔗 ลิงก์ที่เกี่ยวข้อง
+
+- เว็บไซต์: https://ppekkungz.in.th  
+- Docs รวม: https://docs.ppekkungz.in.th  
+- GitHub: https://github.com/PPekKunGz  
+- ผู้พัฒนา: @PPekKunGzDev
