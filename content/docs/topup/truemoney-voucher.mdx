@@ -1,0 +1,220 @@
+---
+title: "TrueMoney API"
+description: "Enhanced documentation with Cards, Steps, Callouts, and Interactive API Playground."
+---
+
+# 📘 TrueMoney Gift API — Documentation
+
+<Callout type="error">
+ระบบนี้ยังไม่พร้อมใช้งาน Production
+</Callout>
+
+<Callout type="info">
+API สำหรับอ่านข้อมูลซองอั่งเปา TrueMoney พร้อมระบบ Filter ยืดหยุ่น  
+เหมาะสำหรับระบบเติมเงิน, Automation bot, Middleware, และ Service Gateway
+</Callout>
+
+---
+
+# 🚀 Quick Overview
+
+<Cards>
+  <Card title="🔑 Endpoint">
+    POST https://ppekkungz.in.th/api/topup/truewallet  
+    รองรับ JSON Request / Response  
+  </Card>
+
+  <Card title="🧮 Features">
+    • Filter ได้ละเอียด  
+    • รองรับหลายฟิลด์  
+    • Error format ชัดเจน  
+  </Card>
+
+  <Card title="📦 Integrations">
+    • รองรับ cURL  
+    • รองรับ Swagger  
+    • ใช้งานได้กับเว็บ & Server  
+  </Card>
+</Cards>
+
+---
+
+# 🛠️ วิธีใช้งาน API (Step-by-Step)
+
+<Steps>
+  <Step title="ส่งเบอร์ + ลิงก์ซอง TrueMoney">
+    ต้องมี phone และ link ครบ เช่น
+    <code>
+{`"phone": "0812345678",
+"link": "https://gift.truemoney.com/campaign/?v=xxxx"`}
+    </code>
+  </Step>
+
+  <Step title="เลือก Filter (ถ้าต้องการ)">
+    สามารถเลือก filter เช่น "amount", "owner", "voucher"
+  </Step>
+
+  <Step title="ส่ง Request → รับข้อมูลตาม Filter">
+    ระบบจะส่งข้อมูลแบบ JSON พร้อม status ชัดเจน  
+  </Step>
+</Steps>
+
+---
+
+# 🧪 API Playground (Interactive)
+
+<Callout type="info">
+API Playground ยังไม่พร้อมใช้งาน
+</Callout>
+
+{/* <ApiPlayground
+  endpoint="https://ppekkungz.in.th/api/topup/truewallet"
+  method="POST"
+  code={`
+{
+  "phone": "0812345678",
+  "link": "https://gift.truemoney.com/campaign/?v=xxxx",
+  "filter": ["amount", "owner", "voucher"]
+}
+  `}
+/> */}
+
+---
+
+# 🔑 Endpoint
+
+```
+POST https://ppekkungz.in.th/api/topup/truewallet
+```
+
+---
+
+# 📮 Request Example
+
+```
+{
+  "phone": "0812345678",
+  "link": "https://gift.truemoney.com/campaign/?v=xxxx",
+  "filter": ["amount", "owner", "voucher"]
+}
+```
+
+---
+
+# 🎛 Filters
+
+<Cards>
+  <Card title="🟠 Basic Data">
+    amount, redeemed_amount, owner, redeemer
+  </Card>
+
+  <Card title="💌 Voucher Info">
+    voucher.*, status, expire_date, detail
+  </Card>
+
+  <Card title="👥 Tickets">
+    tickets_all, tickets_last, tickets_receivers_count
+  </Card>
+
+  <Card title="⛔ Expiration">
+    voucher_expired_only
+  </Card>
+</Cards>
+
+---
+
+# 📤 Response — Success
+
+~~~json
+{
+  "status": { "code": "SUCCESS", "message": "สำเร็จ" },
+  "data": {
+    "amount": 50,
+    "redeemed_amount": 48.55,
+    "owner": "สมเกียรติ ***",
+    "redeemer": "สมหมาย ***",
+    "voucher": {
+      "voucher_id": "510286826211472911",
+      "amount_baht": "50.00",
+      "redeemed_amount_baht": "50.00",
+      "expire_date": 1765385765700,
+      "status": "redeemed"
+    }
+  }
+}
+~~~
+
+---
+
+# ❌ Response — Error
+
+### ซองหมดอายุ
+~~~json
+{
+  "status": { "code": "VOUCHER_EXPIRED", "message": "ซองวอเลทนี้หมดอายุแล้ว" }
+}
+~~~
+
+### Input ไม่ครบ
+~~~json
+{
+  "status": { "code": "INVALID_INPUT", "message": "กรุณากรอกข้อมูลให้ครบ" }
+}
+~~~
+
+---
+
+# 🚀 Quick Test (cURL)
+
+~~~bash
+curl -X POST https://ppekkungz.in.th/api/topup/truewallet \
+-H "Content-Type: application/json" \
+-d '{
+  "phone": "0812345678",
+  "link": "https://gift.truemoney.com/campaign/?v=xxxx",
+  "filter": ["amount", "owner", "voucher"]
+}'
+~~~
+
+---
+
+# 📄 Swagger (OpenAPI 3.0)
+
+~~~yaml
+openapi: 3.0.0
+info:
+  title: TrueMoney Gift API
+  version: 1.0.0
+
+servers:
+  - url: https://ppekkungz.in.th/api/topup
+
+paths:
+  /truewallet:
+    post:
+      summary: Read TrueMoney Gift information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone: { type: string }
+                link: { type: string }
+                filter:
+                  type: array
+                  items: { type: string }
+      responses:
+        "200": { description: Success }
+        "400": { description: Invalid input }
+        "410": { description: Voucher expired }
+~~~
+
+---
+
+# 🏁 สรุป
+
+<Callout type="error">
+ระบบนี้ยังไม่พร้อมใช้งาน Production
+</Callout>
