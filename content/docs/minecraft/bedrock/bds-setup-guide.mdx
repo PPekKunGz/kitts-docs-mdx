@@ -1,0 +1,276 @@
+---
+title: "⚡ BDS Setup Guide"
+description: "คู่มือเปิดเซิร์ฟเวอร์ Minecraft Bedrock อย่างเป็นทางการบน Linux ด้วย Docker — ง่าย ชัด เร็ว"
+---
+
+# ⚡ Bedrock Dedicated Server (BDS)
+คู่มือเปิด Minecraft Bedrock Dedicated Server (BDS) บน Linux ด้วย **Docker**  
+เหมาะสำหรับผู้เริ่มต้นจนถึง DevOps ที่ต้องการความเสถียรและดูแลง่าย
+
+---
+
+# 🧭 ภาพรวม (Overview)
+
+<Cards>
+  <Card title="🖥️ รองรับระบบ">
+    Linux (Ubuntu / Debian / CentOS)  
+    ใช้ Docker ในการจัดการเซิร์ฟเวอร์  
+  </Card>
+
+  <Card title="🚀 ทำตามได้ภายใน 10 นาที">
+    แค่ติดตั้ง Docker → สร้างโฟลเดอร์ → วาง Compose → รัน  
+  </Card>
+
+  <Card title="📦 Features">
+    • Auto-update  
+    • World persistence  
+    • รองรับ packs / addons  
+    • Backup ง่าย  
+  </Card>
+</Cards>
+
+---
+
+# 🧩 ขั้นตอนติดตั้ง (Quick Setup)
+
+<Steps>
+
+  <Step title="ติดตั้ง Docker + Docker Compose">
+    รองรับ Ubuntu / Debian / CentOS  
+    <Callout type="info">ที่มา https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository</Callout>
+
+~~~bash
+# อัปเดตระบบ
+sudo apt update && sudo apt upgrade -y
+
+# Add Docker's official GPG key:
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+~~~
+
+  </Step>
+
+  <Step title="สร้างโฟลเดอร์เซิร์ฟเวอร์">
+~~~bash
+mkdir -p ~/bedrock-server
+cd ~/bedrock-server
+
+mkdir -p worlds behavior_packs resource_packs backups
+~~~
+  </Step>
+
+  <Step title="สร้างไฟล์ docker-compose.yml">
+
+~~~yaml
+services:
+  bedrock:
+    image: itzg/minecraft-bedrock-server:latest
+    container_name: bedrock-server
+    restart: unless-stopped
+
+    environment:
+      EULA: "TRUE" #ยอมรับ EULA
+      VERSION: "LATEST" #เลือก LATEST ให้เป็นเวอร์ชันล่าสุด
+      LEVEL_NAME: "BedrockServer" #ชื่อไฟล์โฟลเดอร์โลก /worlds/BedrockServer
+
+      SERVER_NAME: "My BDS Server" #ชื่อเซิร์ฟเวอร์ที่แสดงในหน้าก่อนเข้าเซิฟ
+      GAMEMODE: survival #โหมดเกม
+      DIFFICULTY: normal #ความยาก
+      MAX_PLAYERS: 20 #จำนวนผู้เล่น
+      ALLOW_CHEATS: "true" #เปิดการโกง
+      ONLINE_MODE: "true" #เปิดการเชื่อมต่อออนไลน์ xbox
+
+      MEMORY: "4G" #จำนวนแรมที่จะให้เซิร์ฟเวอร์
+      VIEW_DISTANCE: 12 #ระยะมองเห็น
+      TICK_DISTANCE: 4 #ระยะโหลด entity
+
+    ports:
+      - "19132:19132/udp" #พอร์ตสำหรับการเชื่อมต่อ
+
+    volumes:
+      - ./worlds:/data/worlds #โฟลเดอร์โลก
+      - ./behavior_packs:/data/behavior_packs #โฟลเดอร์ behavior packs
+      - ./resource_packs:/data/resource_packs #โฟลเดอร์ resource packs
+      # - ./backups:/data/backups #โฟลเดอร์สำรอง
+      # - ./server.properties:/data/server.properties #ไฟล์ server.properties
+
+    stdin_open: true
+    tty: true
+~~~
+  </Step>
+
+  <Step title="เริ่มเซิร์ฟเวอร์ Bedrock">
+~~~bash
+docker-compose up -d
+
+docker-compose logs -f
+~~~
+
+ถ้าขึ้นข้อความ:
+```
+Server started
+IPv4 supported, port: 19132
+```
+แปลว่าเซิร์ฟเวอร์พร้อมใช้งานแล้ว
+  </Step>
+
+</Steps>
+
+---
+
+# ⚙️ Configuration (ค่าปรับแต่งสำคัญ)
+
+<Callout type="info">
+ไฟล์ `server.properties`, `allowlist.json`, `permissions.json` จะถูกสร้างหลังรันครั้งแรก
+</Callout>
+
+## ตัวแปร Environment ที่ใช้บ่อย
+
+| Variable | ค่า | ความหมาย |
+|---------|------|-----------|
+| VERSION | LATEST / 1.xx.xx | เลือกเวอร์ชันเซิร์ฟเวอร์ |
+| LEVEL_NAME | ข้อความ | ชื่อโฟลเดอร์โลก |
+| GAMEMODE | survival / creative | โหมดเกม |
+| DIFFICULTY | peaceful / easy / normal / hard | ความยาก |
+| MAX_PLAYERS | ตัวเลข | จำนวนผู้เล่น |
+| MEMORY | 2G / 4G / 8G | RAM |
+| VIEW_DISTANCE | 4-32 | ระยะมองเห็น |
+| TICK_DISTANCE | 4-12 | ระยะโหลด entity |
+
+---
+
+# 🕹️ คำสั่งจัดการเซิร์ฟเวอร์ (Admin Commands)
+
+### เริ่ม / หยุด / รีสตาร์ท
+
+~~~bash
+docker-compose up -d
+docker-compose down
+docker-compose restart
+~~~
+
+### ดู Logs
+
+~~~bash
+docker-compose logs -f
+~~~
+
+### ส่งคำสั่งไปยังเซิร์ฟเวอร์
+
+~~~bash
+docker exec bedrock-server send-command "say Hello players!"
+docker exec bedrock-server send-command "time set day"
+docker exec bedrock-server send-command "whitelist add Steve"
+docker exec bedrock-server send-command "op Steve"
+~~~
+
+---
+
+# 📦 การติดตั้ง Addons & Packs
+
+<Cards>
+  <Card title="📁 Behavior Packs">วางไว้ที่ <code>behavior_packs/</code></Card>
+  <Card title="🎨 Resource Packs">วางไว้ที่ <code>resource_packs/</code></Card>
+  <Card title="🌍 เปิดใช้ในโลก">แก้ไฟล์ world_behavior_packs.json</Card>
+</Cards>
+
+**ตัวอย่าง world_behavior_packs.json**
+
+~~~json
+[
+  {
+    "pack_id": "uuid-of-pack",
+    "version": [1, 0, 0]
+  }
+]
+~~~
+
+---
+
+# 💾 Backup & Restore (สำรองข้อมูล)
+
+### Backup
+
+~~~bash
+tar -czf backup-$(date +%Y%m%d-%H%M).tar.gz worlds/ behavior_packs/ resource_packs/
+~~~
+
+### Restore
+
+~~~bash
+docker-compose down
+
+tar -xzf backup-file.tar.gz
+
+docker-compose up -d
+~~~
+
+---
+
+# 🛠️ Troubleshooting (แก้ปัญหาที่เจอบ่อย)
+
+### ❌ Container ไม่รัน
+
+~~~bash
+docker-compose logs
+docker ps -a
+~~~
+
+### ❌ Port 19132 ถูกใช้แล้ว
+
+~~~bash
+sudo netstat -tulpn | grep 19132
+~~~
+
+เปลี่ยน Port:
+
+~~~yaml
+ports:
+  - "25565:19132/udp"
+~~~
+
+### ❌ Addon ไม่โหลด
+
+1. ตรวจ `manifest.json`  
+2. ตรวจ `world_behavior_packs.json`  
+3. ดู logs → `docker-compose logs | grep pack`
+
+---
+
+# 🎯 ข้อแนะนำ (Best Practices)
+
+<Callout type="success">
+✔ Backup บ่อย  
+✔ ใช้ SSD  
+✔ จำกัด view distance ตามจำนวนผู้เล่น  
+✔ เปิด whitelist ถ้าเป็นเซิร์ฟส่วนตัว  
+✔ อัปเดต BDS & Docker เป็นประจำ  
+</Callout>
+
+---
+
+# 🏁 เสร็จสิ้น!
+
+เซิร์ฟเวอร์ Bedrock ของคุณพร้อมใช้งานแล้ว! 🎉  
+ผู้เล่นสามารถเชื่อมต่อได้ที่:
+
+```
+IP: <server-ip>
+Port: 19132
+```

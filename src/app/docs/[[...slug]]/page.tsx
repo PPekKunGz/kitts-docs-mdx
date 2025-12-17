@@ -21,8 +21,8 @@ export default async function DocsPageRoute({ params }: any) {
 
     return (
         <DocsPage toc={page.data.toc}>
-            <DocsTitle>{page.data.title}</DocsTitle>
-            <DocsDescription>{page.data.description}</DocsDescription>
+            {/* <DocsTitle>{page.data.title}</DocsTitle> */}
+            {/* <DocsDescription>{page.data.description}</DocsDescription> */}
 
             <DocsBody>
                 <MDX components={mdxComponents} />

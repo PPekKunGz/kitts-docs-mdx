@@ -2,7 +2,8 @@
     "title": "📃 Minecraft",
     "pages": [
         "index",
-        "mods"
+        "mods",
+        "bedrock"
     ],
     "defaultOpen": false
 }
