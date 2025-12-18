@@ -1,4 +1,4 @@
-import { AlbumIcon, Heart, LayoutTemplate } from 'lucide-react';
+import { AlbumIcon, Heart, LayoutTemplate, TimerIcon } from 'lucide-react';
 import Image from 'next/image';
 import type { BaseLayoutProps, LinkItemType } from 'fumadocs-ui/layouts/shared';
 import { LogoIcon } from '@/app/layout.client';
@@ -21,6 +21,11 @@ export const linkItems: LinkItemType[] = [
         text: 'Sponsors',
         url: 'https://github.com/sponsors/PPekKunGz',
         icon: <Heart />,
+    },
+    {
+        text: 'Hireable',
+        url: 'https://wakatime.com/@PPekKunGz',
+        icon: <TimerIcon />,
     },
     {
         type: 'icon',
@@ -91,6 +96,7 @@ export function baseOptions(): BaseLayoutProps {
                 <>
                     {logo}
                     <span className="font-bold tracking-wider in-[.uwu]:hidden">Kitt's Docs</span>
+                    <span className="bg-green-500 px-1 py-[2px] font-bold rounded-md text-white text-xs in-[.uwu]:hidden">hireable</span>
                 </>
             ),
             url: '/',
@@ -99,5 +105,8 @@ export function baseOptions(): BaseLayoutProps {
             enabled: false,
         },
         links: linkItems,
+        searchToggle: {
+            enabled: true,
+        },
     };
 }
