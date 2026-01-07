@@ -1,0 +1,205 @@
+---
+title: Minecraft Dedicated IP Setup (WireGuard Tunnel)
+description: ใช้ Dedicated Server เป็น Public IP Gateway สำหรับ Minecraft Server ที่บ้าน รองรับ TCP/UDP และ Voice Chat
+---
+
+<Callout type="info">
+คู่มือนี้อธิบายการใช้ **Dedicated Server** เป็นทางเข้า (Gateway)  
+เพื่อให้ Minecraft Server ที่บ้านมี **Public IP ส่วนตัว**  
+และรองรับ **Voice Chat (UDP)** ด้วย Ping ต่ำที่สุด
+</Callout>
+
+---
+
+## โครงสร้างระบบ
+
+{/* <img
+  src="/images/minecraft-wireguard-diagram.png"
+  alt="Minecraft WireGuard Tunnel Diagram"
+  width="700"
+/> */}
+
+<Cards>
+  <Card title="Dedicated Server">
+    ทำหน้าที่เป็น Public IP Gateway และ Port Forward
+  </Card>
+  <Card title="Home Server">
+    รัน Minecraft Server จริงอยู่หลัง NAT
+  </Card>
+  <Card title="WireGuard">
+    เชื่อมทั้งสองเครื่องด้วย Tunnel ส่วนตัว (10.0.0.0/24)
+  </Card>
+</Cards>
+
+---
+
+## 1. ติดตั้ง WireGuard และสร้าง Key (ทั้ง 2 เครื่อง)
+
+<Steps>
+  <Step title="ติดตั้งแพ็กเกจ">
+```bash
+sudo apt update && sudo apt install wireguard iptables-persistent -y
+```
+  </Step>
+
+  <Step title="สร้าง Private / Public Key">
+```bash
+umask 077
+wg genkey | tee privatekey | wg pubkey > publickey
+```
+  </Step>
+
+  <Step title="ดูค่า Key">
+```bash
+echo "--- ค่ากุญแจของคุณ ---"
+echo "Private Key: $(cat privatekey)"
+echo "Public Key:  $(cat publickey)"
+```
+  </Step>
+</Steps>
+
+---
+
+## 2. ตั้งค่าไฟล์ WireGuard
+
+<Files>
+  <Folder name="/etc/wireguard">
+
+    <File name="wg0.conf (Dedicated Server)">
+```ini
+[Interface]
+PrivateKey = <DEDICATED_PRIVATE_KEY>
+Address = 10.0.0.1/24
+ListenPort = 51820
+
+[Peer]
+PublicKey = <HOME_PUBLIC_KEY>
+AllowedIPs = 10.0.0.2/32
+```
+    </File>
+
+    <File name="wg0.conf (Home Server)">
+```ini
+[Interface]
+PrivateKey = <HOME_PRIVATE_KEY>
+Address = 10.0.0.2/24
+
+[Peer]
+PublicKey = <DEDICATED_PUBLIC_KEY>
+Endpoint = <DEDICATED_PUBLIC_IP>:51820
+AllowedIPs = 10.0.0.0/24
+PersistentKeepalive = 25
+```
+    </File>
+
+  </Folder>
+</Files>
+
+---
+
+## 3. เปิด Tunnel และทำ Port Forward
+
+### Dedicated Server (Gateway)
+
+<Callout type="warning">
+คำสั่งชุดนี้ทำหน้าที่ Forward **TCP/UDP** จาก Public IP เข้าสู่ Minecraft Server ที่บ้าน
+</Callout>
+
+<CodeBlock>
+```bash
+# เปิด WireGuard
+sudo wg-quick up wg0
+
+# เปิด IP Forward
+sudo sysctl -w net.ipv4.ip_forward=1
+
+# ล้าง NAT เก่า
+sudo iptables -t nat -F
+
+# Forward TCP (Minecraft Java)
+sudo iptables -t nat -A PREROUTING -p tcp --dport 25565 \
+  -j DNAT --to-destination 10.0.0.2:25565
+
+# Forward UDP (Voice Chat / Bedrock)
+sudo iptables -t nat -A PREROUTING -p udp --dport 25565 \
+  -j DNAT --to-destination 10.0.0.2:25565
+
+# Masquerade
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE
+
+# บันทึกถาวร
+sudo netfilter-persistent save
+```
+</CodeBlock>
+
+---
+
+### Home Server
+
+<CodeBlock>
+```bash
+sudo wg-quick up wg0
+sudo wg
+```
+</CodeBlock>
+
+<Callout type="success">
+หากมีผู้เล่นเข้าเกม ค่า **Transfer** ต้องขยับ
+</Callout>
+
+---
+
+### การตั้งค่า Minecraft
+
+<Steps>
+  <Step title="IP สำหรับผู้เล่น">
+    ใช้ **Public IP ของ Dedicated Server**
+  </Step>
+
+  <Step title="server.properties">
+```properties
+server-ip= #ต้องว่างเปล่า
+```
+  </Step>
+
+  <Step title="Firewall">
+    <ul>
+      <li>Dedicated: 51820/udp, 25565 tcp/udp</li>
+      <li>Home: 25565 tcp/udp</li>
+    </ul>
+  </Step>
+</Steps>
+
+---
+
+## Troubleshooting
+
+<Callout type="info">ตรวจสอบปัญหาที่พบบ่อย</Callout>
+
+<ul>
+  <li>Ping ไม่ติด → เช็ค 51820/udp ที่ Firewall</li>
+  <li>Voice Chat ไม่ทำงาน → ตรวจสอบ Port (เช่น 24454/udp)</li>
+  <li>ไม่มีคนเข้า → เช็ค DNAT และคำสั่ง `wg show`</li>
+</ul>
+
+---
+
+## ต่อยอด
+
+<Cards>
+  <Card title="Dynmap">
+    เพิ่ม Port 8123 / 8100
+  </Card>
+
+  <Card title="Voice Chat แยก Port">
+    เช่น 24454/udp
+  </Card>
+
+  <Card title="จำกัด IP">
+    เพิ่ม iptables whitelist
+  </Card>
+</Cards>
+
+<Callout type="success">
+หากต้องการเพิ่ม Port หรือทำ Load Balance สามารถขอชุด iptables เพิ่มเติมได้
+</Callout>
